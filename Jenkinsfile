@@ -53,5 +53,20 @@ pipeline{
                 }
             }
         }
+    stage('Deploy to ECS Fargate') {
+            steps {
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-token']]) {
+                    script {
+                        sh """
+                        aws ecs update-service \
+                        --cluster multi-ai-agent-cluster1 \
+                        --service multi-ai-agent-def-service-fqgqrb9f  \
+                        --force-new-deployment \
+                        --region ${AWS_REGION}
+                        """
+                        }
+                    }
+                }
+            }
     }
 }
